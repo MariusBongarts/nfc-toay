@@ -16,6 +16,7 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import { FirebaseService } from '@/services/firebase.service';
 
 // declare const MediaRecorder: any;
 @Options({
@@ -25,17 +26,18 @@ export default class Home extends Vue {
   recording = false;
   playing = false;
 
+  id = '1f023f05-8541-46d8-93a3-f07223df81f3';
+
+  firebaseService = new FirebaseService();
+
   mediaRecorder!: MediaRecorder;
   player!: AudioBufferSourceNode;
 
   async startAudio() {
     if (!this.playing) {
-      if (localStorage.base64) {
-        const audioBuffer = await this.parseBase64ToAudioBuffer(
-          localStorage.base64
-        );
-        this.play(audioBuffer);
-      }
+      const base64 = await this.firebaseService.getBase64(this.id);
+      const audioBuffer = await this.parseBase64ToAudioBuffer(base64);
+      this.play(audioBuffer);
     }
     if (this.playing) {
       this.player.stop();
@@ -67,6 +69,7 @@ export default class Home extends Vue {
       const audioBlob = new Blob(audioChunks);
       const base64 = await this.parseAudioBlobToBase64(audioBlob);
       localStorage.base64 = base64;
+      await this.firebaseService.saveBase64(this.id, base64);
     });
   }
 
@@ -128,10 +131,11 @@ export default class Home extends Vue {
   background-color: darkred;
 }
 .notPlay {
-  background-color:  #005319;
+  background-color: #005319;
 }
 
-.Rec, .Play {
+.Rec,
+.Play {
   animation-duration: 1.5s;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
@@ -164,7 +168,7 @@ export default class Home extends Vue {
     box-shadow: 0px 0px 5px 13px hsla(138, 100%, 21%, 0.308);
   }
   90% {
-    box-shadow: 0px 0px 5px 13px  hsla(138, 100%, 16%, 0.041);
+    box-shadow: 0px 0px 5px 13px hsla(138, 100%, 16%, 0.041);
   }
 }
 </style>
