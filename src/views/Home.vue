@@ -7,7 +7,7 @@
     ></button>
     <button
       id="playButton"
-      :class="playing ? 'Rec' : 'notRec'"
+      :class="playing ? 'Play' : 'notPlay'"
       @click="startAudio"
     ></button>
     <audio id="recordedAudio" ref="audioPlayer"></audio>
@@ -121,21 +121,31 @@ export default class Home extends Vue {
   background-color: red;
 }
 #playButton {
-  background-color: rgb(0, 161, 48);
+  background-color: #00a130;
 }
 
 .notRec {
   background-color: darkred;
 }
+.notPlay {
+  background-color:  #005319;
+}
 
-.Rec {
-  animation-name: pulse;
+.Rec, .Play {
   animation-duration: 1.5s;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
 }
 
-@keyframes pulse {
+.Rec {
+  animation-name: pulse-rec;
+}
+
+.Play {
+  animation-name: pulse-play;
+}
+
+@keyframes pulse-rec {
   0% {
     box-shadow: 0px 0px 5px 0px rgba(173, 0, 0, 0.3);
   }
@@ -144,6 +154,17 @@ export default class Home extends Vue {
   }
   90% {
     box-shadow: 0px 0px 5px 13px rgba(173, 0, 0, 0);
+  }
+}
+@keyframes pulse-play {
+  0% {
+    box-shadow: 0px 0px 5px 0px #00661f;
+  }
+  65% {
+    box-shadow: 0px 0px 5px 13px hsla(138, 100%, 21%, 0.308);
+  }
+  90% {
+    box-shadow: 0px 0px 5px 13px  hsla(138, 100%, 16%, 0.041);
   }
 }
 </style>
